@@ -1,0 +1,23 @@
+{
+  "name": "bifrost",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "A rest API mock server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "testWatch": "jest -i --watch",
+    "testWatchAll": "jest -i --watchAll"
+  },
+  "author": "Alessandro Garzaro",
+  "license": "MIT",
+  "dependencies": {
+    "restify": "8.4.0"
+  },
+  "devDependencies": {
+    "jest": "24.9.0",
+    "nodemon": "1.19.2",
+    "supertest": "4.0.2"
+  }
+}
