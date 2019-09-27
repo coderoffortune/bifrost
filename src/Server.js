@@ -29,17 +29,23 @@ class Server {
         this.server.close()
     }
 
-    extractParams(str) {
+    extractPathParams(path) {
         const regex = new RegExp(/(:([a-z0-9]*):)/, 'ig')
 
         let result = []
         let match
 
-        while (match = regex.exec(str)) {
+        while (match = regex.exec(path)) {
             result.push({ placeholder: match[1], name: match[2] })
         }
 
         return result
+    }
+
+    replacePathPlaceholders(path, {params}) {
+        const pathParams = this.extractPathParams(path)
+
+        return pathParams.reduce( (acc, {placeholder, name}) => params[name] ? acc.replace(placeholder, params[name]) : acc, path )
     }
 }
 
