@@ -5,8 +5,8 @@ describe('Filesystem class', () => {
         jest.clearAllMocks();
     })
 
-    describe('lifecycle method', () => {
-        test('loadDirectoryFiles should load directory childrens', () => {
+    describe('loadDirectoryFiles', () => {
+        test('should load directory childrens', () => {
             const filesystem = new Filesystem()
             
             const expectedData = [
@@ -17,7 +17,7 @@ describe('Filesystem class', () => {
             expect(loadedData).toEqual(expectedData)
         })
 
-        test('loadDirectoryFiles should load directory childrens recursively', () => {
+        test('should load directory childrens recursively', () => {
             const filesystem = new Filesystem()
             
             const loadedData = filesystem.loadDirectoryFiles(`${__dirname}/data/endpoints_with_subfolder`)
