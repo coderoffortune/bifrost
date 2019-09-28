@@ -36,6 +36,22 @@ class Server {
         console.log('%s listening at %s', this.server.name, this.server.url);
     }
 
+    mockApiAction(req, res, next, jsonPath) {
+        let result = {}
+
+        const parsedJsonPath = this.replacePathPlaceholders(jsonPath, req)
+
+        try {
+            result = require(parsedJsonPath)
+        } catch(err) {
+            console.error(err)
+        }
+
+        res.send(result)
+
+        next()
+    }
+
     extractPathParams(path) {
         const regex = new RegExp(/(:([a-z0-9]*):)/, 'ig')
 

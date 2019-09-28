@@ -20,13 +20,21 @@ const restify = {
     },
 }
 
+const res = {send: jest.fn()}
+const next = jest.fn()
+
+console = {
+    log: jest.fn(),
+    error: jest.fn()
+}
+
 describe('Bifrost Server', () => {
     afterEach(() => {
         jest.clearAllMocks();
     })
 
     test('.setup() should instantiate restify and setup parsers', () => {
-        let server = new Server({}, restify)
+        const server = new Server({}, restify)
 
         server.setup()
 
@@ -36,7 +44,7 @@ describe('Bifrost Server', () => {
     })
 
     test('.start() should invoke restify listen method', () => {
-        let server = new Server({}, restify)
+        const server = new Server({}, restify)
 
         server.setup().start()
 
@@ -44,20 +52,15 @@ describe('Bifrost Server', () => {
     })
 
     test('.logStart() should call console.log', () => {
-        let server = new Server({}, restify)
-
-        const consoleLog = console.log
-        console.log = jest.fn()
+        const server = new Server({}, restify)
 
         server.setup().start().logStart()
 
-        expect(console.log).toHaveBeenCalled()
-
-        console.log = consoleLog
+        expect(console.log).toHaveBeenCalledTimes(1)
     })
 
     test('.stop() should invoke restify close method', () => {
-        let server = new Server({}, restify)
+        const server = new Server({}, restify)
 
         server.setup().stop()
 
@@ -65,7 +68,7 @@ describe('Bifrost Server', () => {
     })
 
     test('.extractParams() should return the parameter placeholder', () => {
-        let server = new Server()
+        const server = new Server()
 
         const path = './data/:filename:.json'
 
@@ -76,7 +79,7 @@ describe('Bifrost Server', () => {
     })
 
     test('.extractParams() should return the parameter name', () => {
-        let server = new Server()
+        const server = new Server()
 
         const path = './data/:filename:.json'
 
@@ -86,7 +89,7 @@ describe('Bifrost Server', () => {
     })
 
     test('.extractParams() should return both parameters placeholders and names', () => {
-        let server = new Server()
+        const server = new Server()
 
         const path = './data/:folder:/:filename:.json'
 
@@ -100,7 +103,7 @@ describe('Bifrost Server', () => {
     })
 
     test('.replacePathPlaceholders() should replace a path placeholder with request param', () => {
-        let server = new Server()
+        const server = new Server()
 
         const path = './data/:filename:.json'
         const request = {
@@ -115,7 +118,7 @@ describe('Bifrost Server', () => {
     })
 
     test('.replacePathPlaceholders() should replace all path placeholders with request params', () => {
-        let server = new Server()
+        const server = new Server()
 
         const path = './data/:folder:/:filename:.json'
         const request = {
@@ -131,7 +134,7 @@ describe('Bifrost Server', () => {
     })
 
     test('.replacePathPlaceholders() should leave path placeholders that are not in the request params', () => {
-        let server = new Server()
+        const server = new Server()
 
         const path = './data/:folder:/:filename:.json'
         const request = {
@@ -143,5 +146,48 @@ describe('Bifrost Server', () => {
         const parsedPath = server.replacePathPlaceholders(path, request)
 
         expect(parsedPath).toEqual('./data/bar/:filename:.json')
+    })
+
+    test('.mockApiAction() should return the data inside the desired json file', () => {
+        const server = new Server()
+        const mockData = require('./data/mock_response.json')
+        const req = {}
+        
+        server.mockApiAction(req, res, next, '../tests/data/mock_response.json')
+
+        expect(res.send).toHaveBeenCalledWith(mockData)
+        expect(next).toHaveBeenCalledTimes(1)
+    })
+
+    test('.mockApiAction() should return empty data when the json file doesn\'t exists', () => {
+        const server = new Server()
+        const req = {}
+        
+        server.mockApiAction(req, res, next, '../tests/data/mock_responsee.json')
+
+        expect(res.send).toHaveBeenCalledWith({})
+    })
+
+    test('.mockApiAction() should log the error when the json file doesn\'t exists', () => {
+        const server = new Server()
+        const req = {}
+        
+        server.mockApiAction(req, res, next, '../tests/data/mock_responsee.json')
+
+        expect(console.error).toHaveBeenCalledTimes(1)
+    })
+
+    test('.mockApiAction() should return the data inside the desired json file using parametric path', () => {
+        const server = new Server()
+        const mockData = require('./data/mock_response.json')
+        const req = {
+            params: {
+                responseType: 'mock'
+            }
+        }
+        
+        server.mockApiAction(req, res, next, '../tests/data/:responseType:_response.json')
+
+        expect(res.send).toHaveBeenCalledWith(mockData)
     })
 })
