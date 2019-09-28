@@ -22,6 +22,10 @@ class Filesystem {
 
         return filelist
     }
+
+    isDirectory(path) {
+        return this.fs.statSync(path).isDirectory()
+    }
 }
 
 module.exports = Filesystem

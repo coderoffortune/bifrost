@@ -48,15 +48,9 @@ class Server extends Filesystem {
     }
 
     loadMockApiEndpoints(path) {
-        let endpoints 
-        
-        if (this.fs.statSync(path).isDirectory()) {
-            endpoints = [].concat.apply([], this.loadDirectoryFiles(path))
-        } else {
-            endpoints = require(path)
-        }
+        let endpoints = this.isDirectory(path) ? this.loadDirectoryFiles(path) : require(path)
 
-        this.registerMockApiEndpoints(endpoints)
+        this.registerMockApiEndpoints([].concat.apply([], endpoints))
     }
 
     mockApiAction(req, res, next, jsonPath) {

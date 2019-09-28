@@ -5,7 +5,7 @@ describe('Filesystem class', () => {
         jest.clearAllMocks();
     })
 
-    describe('loadDirectoryFiles', () => {
+    describe('.loadDirectoryFiles()', () => {
         test('should load directory childrens', () => {
             const filesystem = new Filesystem()
             
