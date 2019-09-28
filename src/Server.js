@@ -37,6 +37,8 @@ class Server {
     }
 
     registerMockApiEndpoints(endpoints) {
+        endpoints = Array.isArray(endpoints) ? endpoints : require(endpoints)
+
         endpoints.map( ({method, url, response}) => 
             this.server[method](url, (req, res, next) => this.mockApiAction(req, res, next, response))    
         )
