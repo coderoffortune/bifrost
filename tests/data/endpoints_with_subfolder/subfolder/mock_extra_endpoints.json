@@ -1,0 +1,17 @@
+[
+    {
+        "method": "get",
+        "url": "//www.example.com/fakeurl",
+        "response": "../some/data/response.json"
+    },
+    {
+        "method": "get",
+        "url": "//www.example.com/fakeurl",
+        "response": "../some/data/response.json"
+    },
+    {
+        "method": "get",
+        "url": "//www.example.com/fakeurl",
+        "response": "../some/data/response.json"
+    }
+]
