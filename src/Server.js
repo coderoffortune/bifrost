@@ -3,19 +3,19 @@ const Restify = require('restify')
 class Server {
     constructor(options, restify = Restify) {
         const defaultOptions = {
-            port: 8080, 
+            port: 8080,
             name: 'Bifrost API Mock Service'
         }
 
         this.options = Object.assign(defaultOptions, options)
         this.restify = restify
-    } 
+    }
 
     setup() {
         this.server = this.restify.createServer({
             name: this.options.name
         })
-        
+
         this.server.use(this.restify.plugins.queryParser())
         this.server.use(this.restify.plugins.bodyParser())
 
@@ -37,13 +37,17 @@ class Server {
     }
 
     registerMockApiEndpoints(endpoints) {
-        endpoints = Array.isArray(endpoints) ? endpoints : require(endpoints)
-
-        endpoints.map( ({method, url, response}) => 
-            this.server[method](url, (req, res, next) => this.mockApiAction(req, res, next, response))    
+        endpoints.map(({ method, url, response }) =>
+            this.server[method](url, (req, res, next) => this.mockApiAction(req, res, next, response))
         )
 
         return this
+    }
+
+    loadMockApiEndpoints(path) {
+        const endpoints = require(path)
+
+        this.registerMockApiEndpoints(endpoints)
     }
 
     mockApiAction(req, res, next, jsonPath) {
@@ -53,7 +57,7 @@ class Server {
 
         try {
             result = require(parsedJsonPath)
-        } catch(err) {
+        } catch (err) {
             console.error(err)
         }
 
@@ -75,10 +79,10 @@ class Server {
         return result
     }
 
-    replacePathParameters(path, {params}) {
+    replacePathParameters(path, { params }) {
         const pathParams = this.extractPathParameters(path)
 
-        return pathParams.reduce( (acc, {placeholder, name}) => params[name] ? acc.replace(placeholder, params[name]) : acc, path )
+        return pathParams.reduce((acc, { placeholder, name }) => params[name] ? acc.replace(placeholder, params[name]) : acc, path)
     }
 }
 

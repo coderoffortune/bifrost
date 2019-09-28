@@ -239,11 +239,13 @@ describe('Bifrost Server', () => {
 
             expect(getFn).toHaveBeenCalledTimes(2)
         })
+    })
 
-        test('should register endpoints from file if it\'s param is a string', () => {
+    describe('.loadMockApiEndpoints()', () => {
+        test('should load endpoints definition from file', () => {
             const server = new Server({}, restify)
 
-            server.setup().start().registerMockApiEndpoints('../tests/data/endpoints/mock_endpoints.json')
+            server.setup().start().loadMockApiEndpoints('../tests/data/endpoints/mock_endpoints.json')
 
             expect(getFn).toHaveBeenCalledTimes(2)
         })
