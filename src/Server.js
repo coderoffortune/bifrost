@@ -1,32 +1,39 @@
-const restify = require('restify')
+const Restify = require('restify')
 
 class Server {
-    constructor(port = 8080, name = "Bifrost API Mock Service") {
-        this.name = name
-        this.port = port
+    constructor(options, restify = Restify) {
+        const defaultOptions = {
+            port: 8080, 
+            name: 'Bifrost API Mock Service'
+        }
+
+        this.options = Object.assign(defaultOptions, options)
+        this.restify = restify
     } 
 
     setup() {
-        this.server = restify.createServer({
-            name: this.name
+        this.server = this.restify.createServer({
+            name: this.options.name
         })
         
-        this.server.use(restify.plugins.queryParser())
-        this.server.use(restify.plugins.bodyParser())
+        this.server.use(this.restify.plugins.queryParser())
+        this.server.use(this.restify.plugins.bodyParser())
 
         return this
     }
 
     start() {
-        this.server.listen(this.port, () => {
-            console.log('%s listening at %s', this.server.name, this.server.url);
-        })
+        this.server.listen(this.options.port, this.logStart)
 
         return this
     }
 
     stop() {
-        this.server.close()
+        this.server && this.server.close && this.server.close()
+    }
+
+    logStart() {
+        console.log('%s listening at %s', this.server.name, this.server.url);
     }
 
     extractPathParams(path) {

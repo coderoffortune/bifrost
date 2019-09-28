@@ -7,6 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "jest",
+    "testCoverage": "jest --collect-coverage",
     "testWatch": "jest -i --watch",
     "testWatchAll": "jest -i --watchAll"
   },
