@@ -245,9 +245,17 @@ describe('Bifrost Server', () => {
         test('should load endpoints definition from file', () => {
             const server = new Server({}, restify)
 
-            server.setup().start().loadMockApiEndpoints('../tests/data/endpoints/mock_endpoints.json')
+            server.setup().start().loadMockApiEndpoints(`${__dirname}/data/endpoints/mock_endpoints.json`)
 
             expect(getFn).toHaveBeenCalledTimes(2)
+        })
+
+        test('should load endpoints definition from all the files in a directory', () => {
+            const server = new Server({}, restify)
+
+            server.setup().start().loadMockApiEndpoints(`${__dirname}/data/endpoints_with_subfolder`)
+
+            expect(getFn).toHaveBeenCalledTimes(5)
         })
     })
 })

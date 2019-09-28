@@ -1,7 +1,10 @@
 const Restify = require('restify')
+const Filesystem = require('./Filesystem')
 
-class Server {
+class Server extends Filesystem {
     constructor(options, restify = Restify) {
+        super() 
+
         const defaultOptions = {
             port: 8080,
             name: 'Bifrost API Mock Service'
@@ -45,7 +48,13 @@ class Server {
     }
 
     loadMockApiEndpoints(path) {
-        const endpoints = require(path)
+        let endpoints 
+        
+        if (this.fs.statSync(path).isDirectory()) {
+            endpoints = [].concat.apply([], this.loadDirectoryFiles(path))
+        } else {
+            endpoints = require(path)
+        }
 
         this.registerMockApiEndpoints(endpoints)
     }
