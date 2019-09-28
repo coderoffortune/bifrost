@@ -36,10 +36,18 @@ class Server {
         console.log('%s listening at %s', this.server.name, this.server.url);
     }
 
+    registerMockApiEndpoints(endpoints) {
+        endpoints.map( ({method, url, response}) => 
+            this.server[method](url, (req, res, next) => this.mockApiAction(req, res, next, response))    
+        )
+
+        return this
+    }
+
     mockApiAction(req, res, next, jsonPath) {
         let result = {}
 
-        const parsedJsonPath = this.replacePathPlaceholders(jsonPath, req)
+        const parsedJsonPath = this.replacePathParameters(jsonPath, req)
 
         try {
             result = require(parsedJsonPath)
@@ -52,7 +60,7 @@ class Server {
         next()
     }
 
-    extractPathParams(path) {
+    extractPathParameters(path) {
         const regex = new RegExp(/(:([a-z0-9]*):)/, 'ig')
 
         let result = []
@@ -65,8 +73,8 @@ class Server {
         return result
     }
 
-    replacePathPlaceholders(path, {params}) {
-        const pathParams = this.extractPathParams(path)
+    replacePathParameters(path, {params}) {
+        const pathParams = this.extractPathParameters(path)
 
         return pathParams.reduce( (acc, {placeholder, name}) => params[name] ? acc.replace(placeholder, params[name]) : acc, path )
     }
