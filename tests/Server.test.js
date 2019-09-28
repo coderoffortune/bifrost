@@ -168,27 +168,19 @@ describe('Bifrost Server', () => {
             const mockData = require('./data/mock_response.json')
             const req = {}
             
-            server.mockApiAction(req, res, next, '../tests/data/mock_response.json')
+            server.mockApiAction('../tests/data/mock_response.json', req, res, next)
 
             expect(res.send).toHaveBeenCalledWith(mockData)
             expect(next).toHaveBeenCalledTimes(1)
         })
 
-        test('should return empty data when the json file doesn\'t exists', () => {
+        test('should return empty data when the json file doesn\'t exists and log the error', () => {
             const server = new Server()
             const req = {}
             
-            server.mockApiAction(req, res, next, '../tests/data/mock_responsee.json')
+            server.mockApiAction('../tests/data/mock_responsee.json', req, res, next)
 
             expect(res.send).toHaveBeenCalledWith({})
-        })
-
-        test('should log the error when the json file doesn\'t exists', () => {
-            const server = new Server()
-            const req = {}
-            
-            server.mockApiAction(req, res, next, '../tests/data/mock_responsee.json')
-
             expect(console.error).toHaveBeenCalledTimes(1)
         })
 
@@ -201,7 +193,7 @@ describe('Bifrost Server', () => {
                 }
             }
             
-            server.mockApiAction(req, res, next, '../tests/data/:responseType:_response.json')
+            server.mockApiAction('../tests/data/:responseType:_response.json', req, res, next)
 
             expect(res.send).toHaveBeenCalledWith(mockData)
         })

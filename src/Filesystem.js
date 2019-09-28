@@ -7,14 +7,12 @@ class Filesystem {
         this.path = path
     }
 
-    loadDirectoryFiles(dir, filelist) {
-        filelist = filelist || []
-
+    loadDirectoryFiles(dir, filelist = []) {
         this.fs.readdirSync(dir).forEach(file => {
             const filePath = this.path.join(dir, file)
 
             if (this.fs.statSync(filePath).isDirectory()) {
-                filelist = this.loadDirectoryFiles(filePath, filelist)
+                filelist = [].concat.apply([], this.loadDirectoryFiles(filePath, filelist))
             } else {
                 filelist.push(require(filePath))
             }
@@ -24,7 +22,7 @@ class Filesystem {
     }
 
     isDirectory(path) {
-        return this.fs.statSync(path).isDirectory()
+        return this.fs.existsSync(path) && this.fs.statSync(path).isDirectory()
     }
 }
 

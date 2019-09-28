@@ -22,7 +22,17 @@ describe('Filesystem class', () => {
             
             const loadedData = filesystem.loadDirectoryFiles(`${__dirname}/data/endpoints_with_subfolder`)
 
-            expect(loadedData.length).toEqual(2)
+            expect(loadedData.length).toEqual(5)
+        })
+    })
+
+    describe('.isDirectory()', () => {
+        test('should return false if directory doesn\'t exists', () => {
+            const filesystem = new Filesystem()
+
+            const isDirectory = filesystem.isDirectory(`${__dirname}/data/endpointss`)
+
+            expect(isDirectory).toBe(false)
         })
     })
 })

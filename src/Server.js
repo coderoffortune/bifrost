@@ -41,7 +41,7 @@ class Server extends Filesystem {
 
     registerMockApiEndpoints(endpoints) {
         endpoints.map(({ method, url, response }) =>
-            this.server[method](url, (req, res, next) => this.mockApiAction(req, res, next, response))
+            this.server[method](url, this.mockApiAction.bind(this, response))
         )
 
         return this
@@ -50,10 +50,12 @@ class Server extends Filesystem {
     loadMockApiEndpoints(path) {
         let endpoints = this.isDirectory(path) ? this.loadDirectoryFiles(path) : require(path)
 
-        this.registerMockApiEndpoints([].concat.apply([], endpoints))
+        this.registerMockApiEndpoints(endpoints)
+
+        return this
     }
 
-    mockApiAction(req, res, next, jsonPath) {
+    mockApiAction(jsonPath, req, res, next) {
         let result = {}
 
         const parsedJsonPath = this.replacePathParameters(jsonPath, req)
