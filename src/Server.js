@@ -84,10 +84,11 @@ class Server extends Filesystem {
         return result
     }
 
-    replacePathParameters(path, { params }) {
+    replacePathParameters(path, { params, query }) {
         const pathParams = this.extractPathParameters(path)
+        const reqParams = { ...params, ...query }
 
-        return pathParams.reduce((acc, { placeholder, name }) => params[name] ? acc.replace(placeholder, params[name]) : acc, path)
+        return pathParams.reduce((acc, { placeholder, name }) => reqParams[name] ? acc.replace(placeholder, reqParams[name]) : acc, path)
     }
 }
 

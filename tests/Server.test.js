@@ -130,6 +130,22 @@ describe('Bifrost Server', () => {
             expect(parsedPath).toEqual('./data/example.json')
         })
     
+        test('should replace a query string placeholder with query param', () => {
+            const server = new Server()
+    
+            const path = './data/:filename:.json'
+            const request = {
+                params: {},
+                query: {
+                    filename: 'example'
+                }
+            }
+    
+            const parsedPath = server.replacePathParameters(path, request)
+    
+            expect(parsedPath).toEqual('./data/example.json')
+        })
+
         test('should replace all path placeholders with request params', () => {
             const server = new Server()
     
@@ -159,7 +175,7 @@ describe('Bifrost Server', () => {
             const parsedPath = server.replacePathParameters(path, request)
     
             expect(parsedPath).toEqual('./data/bar/:filename:.json')
-        })    
+        })
     })
 
     describe('.mockApiAction()', () => {
