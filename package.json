@@ -9,6 +9,9 @@
     "test:watch": "jest -i --watch",
     "test:watchAll": "jest -i --watchAll"
   },
+  "pre-commit": [
+    "test"
+  ],
   "author": "Alessandro Garzaro",
   "license": "MIT",
   "dependencies": {
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "jest": "24.9.0",
+    "pre-commit": "1.2.2",
     "supertest": "4.0.2"
   }
 }
