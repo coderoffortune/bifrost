@@ -4,12 +4,10 @@
   "description": "A rest API mock server",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
     "test": "jest",
-    "testCoverage": "jest --collect-coverage",
-    "testWatch": "jest -i --watch",
-    "testWatchAll": "jest -i --watchAll"
+    "test:coverage": "jest --collect-coverage",
+    "test:watch": "jest -i --watch",
+    "test:watchAll": "jest -i --watchAll"
   },
   "author": "Alessandro Garzaro",
   "license": "MIT",
@@ -18,7 +16,6 @@
   },
   "devDependencies": {
     "jest": "24.9.0",
-    "nodemon": "1.19.2",
     "supertest": "4.0.2"
   }
 }
