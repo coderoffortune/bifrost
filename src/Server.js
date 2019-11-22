@@ -26,7 +26,7 @@ class Server extends Filesystem {
     }
 
     start() {
-        this.server.listen(this.options.port, this.logStart)
+        this.server.listen(this.options.port, this.logStart.bind(this))
 
         return this
     }
