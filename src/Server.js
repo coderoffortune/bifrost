@@ -1,3 +1,4 @@
+const path = require('path')
 const Restify = require('restify')
 const Filesystem = require('./Filesystem')
 
@@ -7,7 +8,8 @@ class Server extends Filesystem {
 
         const defaultOptions = {
             port: 8080,
-            name: 'Bifrost API Mock Service'
+            name: 'Bifrost API Mock Service',
+            baseDir: ''
         }
 
         this.options = Object.assign(defaultOptions, options)
@@ -47,8 +49,9 @@ class Server extends Filesystem {
         return this
     }
 
-    loadMockApiEndpoints(path) {
-        let endpoints = this.isDirectory(path) ? this.loadDirectoryFiles(path) : require(path)
+    loadMockApiEndpoints(endpointsPath) {
+        endpointsPath = path.join(this.options.baseDir, endpointsPath)
+        let endpoints = this.isDirectory(endpointsPath) ? this.loadDirectoryFiles(endpointsPath) : require(endpointsPath)
 
         this.registerMockApiEndpoints(endpoints)
 
@@ -56,8 +59,9 @@ class Server extends Filesystem {
     }
 
     mockApiAction(jsonPath, req, res, next) {
+        jsonPath = path.join(this.options.baseDir, jsonPath)
+        
         let result = {}
-
         const parsedJsonPath = this.replacePathParameters(jsonPath, req)
 
         try {

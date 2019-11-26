@@ -18,7 +18,7 @@ class Filesystem {
             }
         })
 
-        return filelist
+        return [].concat.apply([], filelist)
     }
 
     isDirectory(path) {

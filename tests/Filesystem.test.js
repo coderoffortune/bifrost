@@ -9,9 +9,8 @@ describe('Filesystem class', () => {
         test('should load directory childrens', () => {
             const filesystem = new Filesystem()
             
-            const expectedData = [
-                require('./data/endpoints/mock_endpoints.json')
-            ]
+            const expectedData = require('./data/endpoints/mock_endpoints.json')
+            
             const loadedData = filesystem.loadDirectoryFiles(`${__dirname}/data/endpoints`)
 
             expect(loadedData).toEqual(expectedData)
