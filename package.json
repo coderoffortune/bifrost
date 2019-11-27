@@ -1,5 +1,5 @@
 {
-  "name": "bifrost",
+  "name": "@northernlightsio/bifrost",
   "version": "1.0.0-SNAPSHOT",
   "description": "A rest API mock server",
   "main": "index.js",
