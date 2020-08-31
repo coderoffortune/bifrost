@@ -1,7 +1,14 @@
 {
   "name": "@northernlightsio/bifrost",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "1.1.1",
+  "license": "MIT",
+  "private": false,
   "description": "A rest API mock server",
+  "author": "Alessandro Garzaro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coderoffortune/bifrost.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "jest",
@@ -12,14 +19,13 @@
   "pre-commit": [
     "test"
   ],
-  "author": "Alessandro Garzaro",
-  "license": "MIT",
   "dependencies": {
     "restify": "8.5.1"
   },
   "devDependencies": {
-    "jest": "25.3.0",
+    "jest": "26.4.2",
     "pre-commit": "1.2.2",
     "supertest": "4.0.2"
-  }
+  },
+  "publishConfig": {}
 }

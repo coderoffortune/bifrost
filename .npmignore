@@ -1,6 +1,7 @@
-node_modules/
-coverage/
+.github/
 .VSCodeCounter/
+coverage/
+node_modules/
 tests/
 Dockerfile
 Jenkinsfile
