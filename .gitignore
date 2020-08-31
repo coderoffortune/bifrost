@@ -1,3 +1,4 @@
-node_modules/
-coverage/
 .VSCodeCounter/
+coverage/
+node_modules/
+

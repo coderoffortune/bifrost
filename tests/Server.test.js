@@ -42,8 +42,8 @@ describe('Bifrost Server', () => {
     })
 
     describe('lifecycle method', () => {
-        test('.setup() should instantiate restify and setup parsers', () => {
-            const server = new Server({}, restify)
+        it('.setup() should instantiate restify and setup parsers', () => {
+            const server = new Server({}, null, restify)
     
             server.setup()
     
@@ -52,24 +52,24 @@ describe('Bifrost Server', () => {
             expect(queryParserFn).toHaveBeenCalled()
         })
     
-        test('.start() should invoke restify listen method', () => {
-            const server = new Server({}, restify)
+        it('.start() should invoke restify listen method', () => {
+            const server = new Server({}, null, restify)
     
             server.setup().start()
     
             expect(listenFn).toHaveBeenCalled()
         })
     
-        test('.logStart() should call console.log', () => {
-            const server = new Server({}, restify)
+        it('.logStart() should call console.log', () => {
+            const server = new Server({}, null, restify)
     
             server.setup().start().logStart()
     
             expect(console.log).toHaveBeenCalledTimes(1)
         })
     
-        test('.stop() should invoke restify close method', () => {
-            const server = new Server({}, restify)
+        it('.stop() should invoke restify close method', () => {
+            const server = new Server({}, null, restify)
     
             server.setup().stop()
     
@@ -78,7 +78,7 @@ describe('Bifrost Server', () => {
     })
 
     describe('.extractPathParameters()', () => {
-        test('should return the parameter placeholder', () => {
+        it('should return the parameter placeholder', () => {
             const server = new Server()
     
             const path = './data/:filename:.json'
@@ -89,7 +89,7 @@ describe('Bifrost Server', () => {
             expect(params[0].placeholder).toEqual(':filename:')
         })
     
-        test('should return the parameter name', () => {
+        it('should return the parameter name', () => {
             const server = new Server()
     
             const path = './data/:filename:.json'
@@ -99,23 +99,32 @@ describe('Bifrost Server', () => {
             expect(params[0].name).toEqual('filename')
         })
     
-        test('should return both parameters placeholders and names', () => {
+        it('should return both parameters placeholders and names', () => {
             const server = new Server()
     
             const path = './data/:folder:/:filename:.json'
     
             const params = server.extractPathParameters(path)
     
-            expect(params.length).toEqual(2)
-            expect(params[0].placeholder).toEqual(':folder:')
-            expect(params[0].name).toEqual('folder')
-            expect(params[1].placeholder).toEqual(':filename:')
-            expect(params[1].name).toEqual('filename')
+            expect(params).toEqual([
+                {placeholder: ':folder:', name: 'folder'},
+                {placeholder: ':filename:', name: 'filename'}
+            ])
+        })
+
+        it('should return * as parameters name when placeholder is wildcard', () => {
+            const server = new Server()
+    
+            const path = './data/:wildcard:.json'
+    
+            const params = server.extractPathParameters(path)
+    
+            expect(params).toEqual([{placeholder: ':wildcard:', name: '*'}])
         })    
     })
 
     describe('.replacePathParameters()', () => {
-        test('should replace a path placeholder with request param', () => {
+        it('should replace a path placeholder with request param', () => {
             const server = new Server()
     
             const path = './data/:filename:.json'
@@ -130,7 +139,7 @@ describe('Bifrost Server', () => {
             expect(parsedPath).toEqual('./data/example.json')
         })
     
-        test('should replace a query string placeholder with query param', () => {
+        it('should replace a query string placeholder with query param', () => {
             const server = new Server()
     
             const path = './data/:filename:.json'
@@ -146,7 +155,7 @@ describe('Bifrost Server', () => {
             expect(parsedPath).toEqual('./data/example.json')
         })
 
-        test('should replace all path placeholders with request params', () => {
+        it('should replace all path placeholders with request params', () => {
             const server = new Server()
     
             const path = './data/:folder:/:filename:.json'
@@ -162,7 +171,7 @@ describe('Bifrost Server', () => {
             expect(parsedPath).toEqual('./data/bar/foo.json')
         })
     
-        test('should leave path placeholders that are not in the request params', () => {
+        it('should leave path placeholders that are not in the request params', () => {
             const server = new Server()
     
             const path = './data/:folder:/:filename:.json'
@@ -179,28 +188,28 @@ describe('Bifrost Server', () => {
     })
 
     describe('.mockApiAction()', () => {
-        test('should return the data inside the desired json file', () => {
+        it('should return the data inside the desired json file', () => {
             const server = new Server()
             const mockData = require('./data/mock_response.json')
             const req = {}
             
-            server.mockApiAction('../tests/data/mock_response.json', req, res, next)
+            server.mockApiAction('../tests/data/mock_response.json', undefined, [], req, res, next)
 
             expect(res.send).toHaveBeenCalledWith(mockData)
             expect(next).toHaveBeenCalledTimes(1)
         })
 
-        test('should return empty data when the json file doesn\'t exists and log the error', () => {
+        it('should return empty data when the json file doesn\'t exists and log the error', () => {
             const server = new Server()
             const req = {}
             
-            server.mockApiAction('../tests/data/mock_responsee.json', req, res, next)
+            server.mockApiAction('../tests/data/mock_responsee.json', undefined, [], req, res, next)
 
             expect(res.send).toHaveBeenCalledWith({})
             expect(console.error).toHaveBeenCalledTimes(1)
         })
 
-        test('should return the data inside the desired json file using parametric path', () => {
+        it('should return the data inside the desired json file using parametric path', () => {
             const server = new Server()
             const mockData = require('./data/mock_response.json')
             const req = {
@@ -209,15 +218,15 @@ describe('Bifrost Server', () => {
                 }
             }
             
-            server.mockApiAction('../tests/data/:responseType:_response.json', req, res, next)
+            server.mockApiAction('../tests/data/:responseType:_response.json', undefined, [], req, res, next)
 
             expect(res.send).toHaveBeenCalledWith(mockData)
         })
     })
 
     describe('.registerMockApiEndpoints()', () => {
-        test('should register one endpoint', () => {
-            const server = new Server({}, restify)
+        it('should register one endpoint', () => {
+            const server = new Server({}, null, restify)
 
             const endpoint = [{
                 method: 'get',
@@ -230,8 +239,8 @@ describe('Bifrost Server', () => {
             expect(getFn).toHaveBeenCalledTimes(1)
         })
 
-        test('should register two endpoints', () => {
-            const server = new Server({}, restify)
+        it('should register two endpoints', () => {
+            const server = new Server({}, null, restify)
 
             const endpoint = [{
                 method: 'get',
@@ -250,20 +259,42 @@ describe('Bifrost Server', () => {
     })
 
     describe('.loadMockApiEndpoints()', () => {
-        test('should load endpoints definition from file', () => {
-            const server = new Server({}, restify)
+        it('should load endpoints definition from file', () => {
+            const server = new Server({}, null, restify)
 
             server.setup().start().loadMockApiEndpoints(`${__dirname}/data/endpoints/mock_endpoints.json`)
 
             expect(getFn).toHaveBeenCalledTimes(2)
         })
 
-        test('should load endpoints definition from all the files in a directory', () => {
-            const server = new Server({}, restify)
+        it('should load endpoints definition from all the files in a directory', () => {
+            const server = new Server({}, null, restify)
 
             server.setup().start().loadMockApiEndpoints(`${__dirname}/data/endpoints_with_subfolder`)
 
             expect(getFn).toHaveBeenCalledTimes(5)
+        })
+    })
+
+    describe('.registerFakeApiEndpoints()', () => {
+        it('should call appropriate server method to register the endpoint', () => {
+            const stubAction = jest.fn()
+            const endpoints = [
+                {
+                    method: 'get',
+                    url: '/Cart.API/1.6/:siteCode/carts.json',
+                    action: stubAction
+                }
+            ]
+            const server = new Server({}, null, restify)
+    
+            server.setup()
+            
+            server.server.get = jest.fn()
+    
+            server.registerFakeApiEndpoints(endpoints)
+    
+            expect(server.server.get).toHaveBeenCalledWith(endpoints[0].url, endpoints[0].action)    
         })
     })
 })
